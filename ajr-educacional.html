@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AJR EDUCACIONAL - Validação de Certificados</title>
+  <meta name="description" content="Valide a autenticidade dos certificados emitidos pela AJR EDUCACIONAL de forma rápida e segura.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --background: #0d1526;
+      --foreground: #e8eaf0;
+      --card: #1a2236;
+      --card-foreground: #e8eaf0;
+      --primary: #4a90e2;
+      --primary-foreground: #ffffff;
+      --secondary: #262f42;
+      --secondary-foreground: #d1d5db;
+      --muted: #1e2738;
+      --muted-foreground: #9ca3af;
+      --accent: #38bdf8;
+      --accent-foreground: #ffffff;
+      --destructive: #ef4444;
+      --border: #334155;
+      --input: #1e2738;
+      --ring: #4a90e2;
+      --radius: 0.625rem;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .font-serif {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+      background-color: rgba(13, 21, 38, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .header nav {
+      max-width: 80rem;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.5rem;
+    }
+
+    @media (min-width: 1024px) {
+      .header nav {
+        padding: 0.75rem 2rem;
+      }
+    }
+
+    .logo-container {
+      background: white;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: inline-block;
+    }
+
+    .logo-container img {
+      height: 40px;
+      width: auto;
+      display: block;
+    }
+
+    .nav-links {
+      display: none;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--foreground);
+    }
+
+    .mobile-menu-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--foreground);
+      padding: 0.5rem;
+    }
+
+    .mobile-menu {
+      display: none;
+      border-top: 1px solid var(--border);
+      background-color: var(--background);
+      padding: 1rem 1.5rem;
+    }
+
+    .mobile-menu.active {
+      display: block;
+    }
+
+    .mobile-menu a {
+      display: block;
+      padding: 0.75rem 0;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .mobile-menu a:hover {
+      color: var(--foreground);
+    }
+
+    @media (min-width: 1024px) {
+      .nav-links {
+        display: flex;
+      }
+      .mobile-menu-btn {
+        display: none;
+      }
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      padding: 6rem 1.5rem 4rem;
+    }
+
+    @media (min-width: 1024px) {
+      .hero {
+        padding: 8rem 2rem 6rem;
+      }
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .hero-bg::before,
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      width: 20rem;
+      height: 20rem;
+      border-radius: 50%;
+      filter: blur(80px);
+    }
+
+    .hero-bg::before {
+      top: -10rem;
+      right: -10rem;
+      background: rgba(74, 144, 226, 0.1);
+    }
+
+    .hero-bg::after {
+      bottom: -10rem;
+      left: -10rem;
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .hero-container {
+      position: relative;
+      max-width: 80rem;
+      margin: 0 auto;
+    }
+
+    .hero-grid {
+      display: grid;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    @media (min-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+      }
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--secondary);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      width: fit-content;
+    }
+
+    .hero-badge svg {
+      color: var(--primary);
+    }
+
+    .hero h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.025em;
+      text-wrap: balance;
+    }
+
+    @media (min-width: 640px) {
+      .hero h1 {
+        font-size: 3rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .hero h1 {
+        font-size: 3.75rem;
+      }
+    }
+
+    .hero-description {
+      font-size: 1.125rem;
+      color: var(--muted-foreground);
+      max-width: 36rem;
+      line-height: 1.75;
+    }
+
+    /* Form Card */
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    @media (min-width: 1024px) {
+      .form-card {
+        padding: 2rem;
+      }
+    }
+
+    .form-card label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 640px) {
+      .form-row {
+        flex-direction: row;
+      }
+    }
+
+    .form-input {
+      flex: 1;
+      height: 3rem;
+      padding: 0 1rem;
+      background: var(--input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--foreground);
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input::placeholder {
+      color: var(--muted-foreground);
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+    }
+
+    .form-input:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      height: 3rem;
+      padding: 0 2rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      font-family: inherit;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s, opacity 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+
+    .btn-primary:hover {
+      background: #3a7bc8;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--foreground);
+    }
+
+    .btn-outline:hover {
+      background: var(--secondary);
+    }
+
+    .form-hint {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+    }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .stat-value {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
+
+    /* Result Card */
+    .result-card {
+      width: 100%;
+      max-width: 28rem;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 1024px) {
+      .result-card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .result-idle,
+    .result-loading,
+    .result-valid,
+    .result-invalid {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 2rem;
+    }
+
+    .result-idle,
+    .result-loading {
+      text-align: center;
+    }
+
+    .result-icon {
+      width: 4rem;
+      height: 4rem;
+      margin: 0 auto 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--secondary);
+    }
+
+    .result-icon svg {
+      width: 2rem;
+      height: 2rem;
+      color: var(--primary);
+    }
+
+    .result-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .result-text {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
+
+    .test-codes {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: rgba(38, 47, 66, 0.5);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+    }
+
+    .test-codes strong {
+      color: var(--foreground);
+    }
+
+    .spinner {
+      width: 3rem;
+      height: 3rem;
+      margin: 0 auto 1rem;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .result-valid {
+      border: 2px solid rgba(34, 197, 94, 0.5);
+    }
+
+    .result-invalid {
+      border: 2px solid rgba(239, 68, 68, 0.5);
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .result-header-icon {
+      width: 3rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .result-header-icon svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .result-valid .result-header-icon {
+      background: rgba(34, 197, 94, 0.2);
+    }
+
+    .result-valid .result-header-icon svg {
+      color: #22c55e;
+    }
+
+    .result-valid .result-header-title {
+      color: #22c55e;
+    }
+
+    .result-invalid .result-header-icon {
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    .result-invalid .result-header-icon svg {
+      color: #ef4444;
+    }
+
+    .result-invalid .result-header-title {
+      color: #ef4444;
+    }
+
+    .result-header-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .result-header-subtitle {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+    }
+
+    .result-data {
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+    }
+
+    .result-field {
+      margin-bottom: 1rem;
+    }
+
+    .result-field-label {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      margin-bottom: 0.25rem;
+    }
+
+    .result-field-value {
+      font-weight: 500;
+    }
+
+    .result-field-value.code {
+      font-family: 'Courier New', monospace;
+      color: var(--primary);
+    }
+
+    .result-row {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .result-btn {
+      width: 100%;
+      margin-top: 1.5rem;
+    }
+
+    .result-invalid-text {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
+
+    .result-invalid-text strong {
+      color: var(--foreground);
+    }
+
+    .result-invalid-text ul {
+      margin-top: 0.5rem;
+      margin-left: 1.25rem;
+      list-style-type: disc;
+    }
+
+    .result-invalid-text li {
+      margin: 0.25rem 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* How It Works */
+    .how-it-works {
+      padding: 6rem 1.5rem;
+      background: rgba(38, 47, 66, 0.3);
+    }
+
+    .section-container {
+      max-width: 80rem;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-title {
+      font-size: 1.875rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .section-title {
+        font-size: 2.25rem;
+      }
+    }
+
+    .section-description {
+      font-size: 1.125rem;
+      color: var(--muted-foreground);
+      max-width: 42rem;
+      margin: 0 auto;
+    }
+
+    .steps-grid {
+      display: grid;
+      gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .steps-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .step-icon-box {
+      width: 6rem;
+      height: 6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+    }
+
+    .step-icon-box svg {
+      width: 2.5rem;
+      height: 2.5rem;
+      color: var(--primary);
+    }
+
+    .step-number {
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      border-radius: 50%;
+      font-size: 0.875rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-description {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      line-height: 1.6;
+    }
+
+    /* Features */
+    .features {
+      padding: 6rem 1.5rem;
+    }
+
+    .features-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .features-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(74, 144, 226, 0.5);
+      box-shadow: 0 20px 25px -5px rgba(74, 144, 226, 0.05), 0 8px 10px -6px rgba(74, 144, 226, 0.05);
+    }
+
+    .feature-icon {
+      width: 3rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(74, 144, 226, 0.1);
+      border-radius: 0.75rem;
+      margin-bottom: 1rem;
+      transition: background-color 0.2s;
+    }
+
+    .feature-card:hover .feature-icon {
+      background: rgba(74, 144, 226, 0.2);
+    }
+
+    .feature-icon svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary);
+    }
+
+    .feature-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-description {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border);
+      background: var(--card);
+    }
+
+    .footer-container {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      gap: 3rem;
+    }
+
+    @media (min-width: 768px) {
+      .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .footer-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+    .footer-brand .logo-container {
+      padding: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-description {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      line-height: 1.6;
+    }
+
+    .footer-cnpj {
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .footer-section h3 {
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-links a {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--foreground);
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
+
+    .contact-item svg {
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .contact-item a {
+      color: var(--muted-foreground);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .contact-item a:hover {
+      color: var(--foreground);
+    }
+
+    .contact-box {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: rgba(38, 47, 66, 0.5);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+
+    .contact-box p {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      line-height: 1.6;
+    }
+
+    .footer-legal {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .legal-notice {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: rgba(38, 47, 66, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+
+    .legal-notice p {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .footer-bottom {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .footer-bottom {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+
+    .footer-bottom p {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
+
+    .footer-bottom .cnpj {
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav>
+      <a href="#" class="logo-container">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Gemini_Generated_Image_nxqbzbnxqbzbnxqb.png-LgwTCpdre7tCujKTxXkphcLPH1ZTzT.jpeg" alt="AJR EDUCACIONAL">
+      </a>
+      <div class="nav-links">
+        <a href="#validar">Validar Certificado</a>
+        <a href="#como-funciona">Como Funciona</a>
+        <a href="#contato">Contato</a>
+      </div>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+        <svg id="menu-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        <svg id="close-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </nav>
+    <div id="mobile-menu" class="mobile-menu">
+      <a href="#validar">Validar Certificado</a>
+      <a href="#como-funciona">Como Funciona</a>
+      <a href="#contato">Contato</a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="validar" class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-container">
+      <div class="hero-grid">
+        <div class="hero-left">
+          <div>
+            <div class="hero-badge">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+              Sistema de Validação Oficial
+            </div>
+            <h1 class="font-serif">Validação de Certificados</h1>
+            <p class="hero-description">
+              Aqui, você pode confirmar a autenticidade e a validade dos certificados emitidos pela AJR Educacional.
+            </p>
+          </div>
+
+          <div class="form-card">
+            <label for="certificate-code">Código do Certificado</label>
+            <div class="form-row">
+              <input 
+                type="text" 
+                id="certificate-code" 
+                class="form-input" 
+                placeholder="Ex: AJR2024001"
+                onkeydown="if(event.key === 'Enter') validateCertificate()"
+              >
+              <button class="btn btn-primary" onclick="validateCertificate()" id="validate-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                Validar
+              </button>
+            </div>
+            <p class="form-hint">O código pode ser encontrado na parte inferior do seu certificado.</p>
+          </div>
+
+          <div class="stats">
+            <div>
+              <div class="stat-value font-serif">5.000+</div>
+              <div class="stat-label">Certificados Emitidos</div>
+            </div>
+            <div>
+              <div class="stat-value font-serif">98%</div>
+              <div class="stat-label">Satisfação</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-card">
+          <!-- Idle State -->
+          <div id="result-idle" class="result-idle">
+            <div class="result-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+            <h3 class="result-title font-serif">Verificação de Autenticidade</h3>
+            <p class="result-text">
+              Insira o código do certificado no campo ao lado para verificar sua autenticidade e visualizar os detalhes.
+            </p>
+            <div class="test-codes">
+              <strong>Códigos de teste:</strong><br>
+              AJR2024001, AJR2024002, AJR2024003
+            </div>
+          </div>
+
+          <!-- Loading State -->
+          <div id="result-loading" class="result-loading hidden">
+            <div class="spinner"></div>
+            <h3 class="result-title font-serif">Verificando...</h3>
+            <p class="result-text">Aguarde enquanto validamos seu certificado.</p>
+          </div>
+
+          <!-- Valid State -->
+          <div id="result-valid" class="result-valid hidden">
+            <div class="result-header">
+              <div class="result-header-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div>
+                <h3 class="result-header-title font-serif">Certificado Válido</h3>
+                <p class="result-header-subtitle">Autenticidade confirmada</p>
+              </div>
+            </div>
+            <div class="result-data">
+              <div class="result-field">
+                <div class="result-field-label">Nome do Aluno</div>
+                <div class="result-field-value" id="cert-name"></div>
+              </div>
+              <div class="result-field">
+                <div class="result-field-label">Curso</div>
+                <div class="result-field-value" id="cert-course"></div>
+              </div>
+              <div class="result-row">
+                <div class="result-field">
+                  <div class="result-field-label">Data de Conclusão</div>
+                  <div class="result-field-value" id="cert-date"></div>
+                </div>
+                <div class="result-field">
+                  <div class="result-field-label">Carga Horária</div>
+                  <div class="result-field-value" id="cert-hours"></div>
+                </div>
+              </div>
+              <div class="result-field">
+                <div class="result-field-label">Código</div>
+                <div class="result-field-value code" id="cert-code"></div>
+              </div>
+            </div>
+            <button class="btn btn-outline result-btn" onclick="resetValidation()">
+              Verificar Outro Certificado
+            </button>
+          </div>
+
+          <!-- Invalid State -->
+          <div id="result-invalid" class="result-invalid hidden">
+            <div class="result-header">
+              <div class="result-header-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              </div>
+              <div>
+                <h3 class="result-header-title font-serif">Certificado Não Encontrado</h3>
+                <p class="result-header-subtitle" id="invalid-code"></p>
+              </div>
+            </div>
+            <div class="result-invalid-text">
+              <p>O código informado não corresponde a nenhum certificado em nosso sistema.</p>
+              <p style="margin-top: 0.75rem;"><strong>Possíveis motivos:</strong></p>
+              <ul>
+                <li>Código digitado incorretamente</li>
+                <li>Certificado não emitido pela AJR EDUCACIONAL</li>
+                <li>Documento falsificado</li>
+              </ul>
+            </div>
+            <button class="btn btn-outline result-btn" onclick="resetValidation()">
+              Tentar Novamente
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="como-funciona" class="how-it-works">
+    <div class="section-container">
+      <div class="section-header">
+        <h2 class="section-title font-serif">Como Funciona</h2>
+        <p class="section-description">
+          Validar seu certificado é simples, rápido e seguro. Siga os passos abaixo para verificar a autenticidade do seu documento.
+        </p>
+      </div>
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-icon-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </div>
+          <div class="step-number">1</div>
+          <h3 class="step-title font-serif">Localize o Código</h3>
+          <p class="step-description">Encontre o código de validação na parte inferior do seu certificado.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </div>
+          <div class="step-number">2</div>
+          <h3 class="step-title font-serif">Insira no Sistema</h3>
+          <p class="step-description">Digite o código completo no campo de busca acima. Certifique-se de digitar exatamente como aparece no documento.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="step-number">3</div>
+          <h3 class="step-title font-serif">Verifique os Dados</h3>
+          <p class="step-description">O sistema exibirá automaticamente as informações do certificado. Compare com o documento em mãos.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+          </div>
+          <div class="step-number">4</div>
+          <h3 class="step-title font-serif">Confirme a Autenticidade</h3>
+          <p class="step-description">Se os dados coincidirem, seu certificado é autêntico e válido. Emitido e reconhecido pela AJR EDUCACIONAL.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="section-container">
+      <div class="section-header">
+        <h2 class="section-title font-serif">Por que escolher a AJR EDUCACIONAL?</h2>
+        <p class="section-description">
+          Oferecemos um sistema robusto e confiável para garantir a autenticidade dos seus certificados.
+        </p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+          </div>
+          <h3 class="feature-title font-serif">Segurança Garantida</h3>
+          <p class="feature-description">Sistema criptografado com as mais modernas tecnologias de proteção de dados.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <h3 class="feature-title font-serif">Validação Instantânea</h3>
+          <p class="feature-description">Resultados em segundos, disponível 24 horas por dia, 7 dias por semana.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+          <h3 class="feature-title font-serif">Acesso Universal</h3>
+          <p class="feature-description">Acesse de qualquer dispositivo, em qualquer lugar do mundo.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h3 class="feature-title font-serif">Dados Protegidos</h3>
+          <p class="feature-description">Suas informações são tratadas com total confidencialidade e sigilo.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg>
+          </div>
+          <h3 class="feature-title font-serif">Certificados Oficiais</h3>
+          <p class="feature-description">Todos os certificados são emitidos com registro e validade nacional.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+          </div>
+          <h3 class="feature-title font-serif">Suporte Especializado</h3>
+          <p class="feature-description">Equipe pronta para ajudar em caso de dúvidas ou problemas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contato" class="footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="logo-container">
+            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Gemini_Generated_Image_nxqbzbnxqbzbnxqb.png-LgwTCpdre7tCujKTxXkphcLPH1ZTzT.jpeg" alt="AJR EDUCACIONAL">
+          </a>
+          <p class="footer-description">Comprometidos com a excelência em educação e a formação de profissionais qualificados para o mercado de trabalho.</p>
+          <p class="footer-cnpj">CNPJ: 60.225.798/0001-00</p>
+        </div>
+
+        <div class="footer-section">
+          <h3>Links Rápidos</h3>
+          <ul class="footer-links">
+            <li><a href="#validar">Validar Certificado</a></li>
+            <li><a href="#como-funciona">Como Funciona</a></li>
+            <li><a href="#contato">Contato</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h3>Contato</h3>
+          <div class="contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <a href="mailto:ajreducacional@gmail.com">ajreducacional@gmail.com</a>
+          </div>
+          <div class="contact-box">
+            <p>Dúvidas sobre certificados? Entre em contato conosco pelo e-mail acima. Responderemos o mais breve possível.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        <div class="legal-notice">
+          <p>O site está em conformidade com a Lei nº 9.394/96, que estabelece as diretrizes e bases da educação nacional, regulamentando os cursos livres e eventos oferecidos. Todas as nossas atividades estão alinhadas às normas e legislações pertinentes.</p>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 AJR EDUCACIONAL. Todos os direitos reservados.</p>
+          <p class="cnpj">CNPJ: 60.225.798/0001-00</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Certificados de exemplo
+    const certificates = {
+      "AJR2024001": {
+        name: "Maria Silva Santos",
+        course: "Gestão de Projetos Educacionais",
+        date: "15/01/2024",
+        hours: "120 horas"
+      },
+      "AJR2024002": {
+        name: "João Pedro Oliveira",
+        course: "Metodologias Ativas de Ensino",
+        date: "20/02/2024",
+        hours: "80 horas"
+      },
+      "AJR2024003": {
+        name: "Ana Carolina Lima",
+        course: "Educação Inclusiva",
+        date: "10/03/2024",
+        hours: "60 horas"
+      }
+    };
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const menuIcon = document.getElementById('menu-icon');
+      const closeIcon = document.getElementById('close-icon');
+      
+      menu.classList.toggle('active');
+      menuIcon.classList.toggle('hidden');
+      closeIcon.classList.toggle('hidden');
+    }
+
+    function validateCertificate() {
+      const code = document.getElementById('certificate-code').value.trim().toUpperCase();
+      if (!code) return;
+
+      // Show loading
+      document.getElementById('result-idle').classList.add('hidden');
+      document.getElementById('result-valid').classList.add('hidden');
+      document.getElementById('result-invalid').classList.add('hidden');
+      document.getElementById('result-loading').classList.remove('hidden');
+
+      // Disable button and input
+      document.getElementById('validate-btn').disabled = true;
+      document.getElementById('certificate-code').disabled = true;
+
+      // Simulate API call
+      setTimeout(() => {
+        document.getElementById('result-loading').classList.add('hidden');
+
+        const certificate = certificates[code];
+        
+        if (certificate) {
+          document.getElementById('cert-name').textContent = certificate.name;
+          document.getElementById('cert-course').textContent = certificate.course;
+          document.getElementById('cert-date').textContent = certificate.date;
+          document.getElementById('cert-hours').textContent = certificate.hours;
+          document.getElementById('cert-code').textContent = code;
+          document.getElementById('result-valid').classList.remove('hidden');
+        } else {
+          document.getElementById('invalid-code').textContent = 'Código: ' + code;
+          document.getElementById('result-invalid').classList.remove('hidden');
+        }
+
+        document.getElementById('validate-btn').disabled = false;
+        document.getElementById('certificate-code').disabled = false;
+      }, 1500);
+    }
+
+    function resetValidation() {
+      document.getElementById('certificate-code').value = '';
+      document.getElementById('result-valid').classList.add('hidden');
+      document.getElementById('result-invalid').classList.add('hidden');
+      document.getElementById('result-idle').classList.remove('hidden');
+    }
+
+    // Close mobile menu when clicking on a link
+    document.querySelectorAll('.mobile-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.getElementById('mobile-menu').classList.remove('active');
+        document.getElementById('menu-icon').classList.remove('hidden');
+        document.getElementById('close-icon').classList.add('hidden');
+      });
+    });
+  </script>
+</body>
+</html>
